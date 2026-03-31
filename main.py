@@ -11,21 +11,14 @@ import hashlib
 from pathlib import Path
 from datetime import datetime
 
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, BackgroundTasks, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from dotenv import load_dotenv
 
 from jobs import JobManager, JobStatus
 from converter import convert_uploaded_file, convert_from_url
 from validators import validate_video_file, validate_youtube_url, validate_instagram_url
 from cleanup import start_cleanup_scheduler
-
-# ── Load env ──────────────────────────────────────────────
-load_dotenv()
 
 # ── Logging ───────────────────────────────────────────────
 logging.basicConfig(
@@ -41,20 +34,9 @@ TEMP_DIR.mkdir(exist_ok=True)
 
 MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "500"))
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
-RATE_LIMIT = os.getenv("RATE_LIMIT", "10/minute")
-
-# ── Rate Limiter ──────────────────────────────────────────
-limiter = Limiter(key_func=get_remote_address)
 
 # ── App ───────────────────────────────────────────────────
-app = FastAPI(
-    title="AudioSnap API",
-    description="Convert videos to MP3 — upload files or paste YouTube/Instagram links.",
-    version="1.0.0",
-)
-
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app = FastAPI()
 
 # ── CORS ──────────────────────────────────────────────────
 app.add_middleware(
@@ -91,21 +73,13 @@ async def on_shutdown():
 # ══════════════════════════════════════════════════════════
 
 @app.get("/health")
-async def health_check():
-    """Health check endpoint."""
-    return {
-        "status": "healthy",
-        "service": "AudioSnap API",
-        "version": "1.0.0",
-        "timestamp": datetime.utcnow().isoformat(),
-    }
+def health():
+    return {"status": "healthy"}
 
 
 # ── Upload Convert ───────────────────────────────────────
 @app.post("/convert/upload")
-@limiter.limit(RATE_LIMIT)
 async def convert_upload(
-    request: Request,
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     quality: str = Form("192"),
@@ -182,9 +156,7 @@ async def _run_upload_conversion(job_id: str, input_path: str, output_path: str,
 
 # ── YouTube Convert ──────────────────────────────────────
 @app.post("/convert/youtube")
-@limiter.limit(RATE_LIMIT)
 async def convert_youtube(
-    request: Request,
     background_tasks: BackgroundTasks,
     url: str = Form(...),
     quality: str = Form("192"),
@@ -227,9 +199,7 @@ async def convert_youtube(
 
 # ── Instagram Convert ────────────────────────────────────
 @app.post("/convert/instagram")
-@limiter.limit(RATE_LIMIT)
 async def convert_instagram(
-    request: Request,
     background_tasks: BackgroundTasks,
     url: str = Form(...),
     quality: str = Form("192"),
