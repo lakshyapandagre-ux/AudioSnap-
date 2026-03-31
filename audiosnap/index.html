@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AudioSnap — Video to Audio Converter</title>
+    <meta name="description" content="AudioSnap is a premium tool to convert your videos to MP3. Fast, free, and beautifully simple." />
+
+    <!-- Preconnect to critical origins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://d8j0ntlcm91z4.cloudfront.net" crossorigin />
+    <link rel="dns-prefetch" href="https://d8j0ntlcm91z4.cloudfront.net" />
+
+    <!-- Fonts — display=swap prevents render-blocking -->
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+
+    <!-- Critical inline CSS — instant background + hero frame before JS loads -->
+    <style>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      html { -webkit-font-smoothing: antialiased; }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: rgba(255,255,255,0.95);
+        background: linear-gradient(180deg, #0e0a1e 0%, #0a0a14 40%, #080812 100%);
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+      /* Prevent FOUC — root has dark bg until React hydrates */
+      #root { min-height: 100vh; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

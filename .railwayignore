@@ -1,0 +1,14 @@
+node_modules/
+audiosnap/
+.git/
+*.md
+__pycache__/
+*.pyc
+.env
+backend/temp/*
+!backend/temp/.gitkeep
+venv/
+.venv/
+.idea/
+.vscode/
+*.log
