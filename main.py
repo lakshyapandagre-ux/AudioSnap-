@@ -34,6 +34,7 @@ TEMP_DIR.mkdir(exist_ok=True)
 
 MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "500"))
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+RATE_LIMIT = os.getenv("RATE_LIMIT", "100/minute")
 
 # ── App ───────────────────────────────────────────────────
 app = FastAPI()

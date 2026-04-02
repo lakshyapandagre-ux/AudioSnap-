@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { Download, RotateCcw, Loader2, CheckCircle2 } from 'lucide-react';
 import UploadTab from './UploadTab';
 import YouTubeTab from './YouTubeTab';
 import InstagramTab from './InstagramTab';
@@ -127,9 +128,22 @@ export default function ConverterSection() {
       )}
 
       {!isProcessing && conv.phase !== 'completed' && (
-        <button className="converter__action" onClick={handleConvert}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5a5 5 0 1010 0 5 5 0 00-10 0z" stroke="currentColor" strokeWidth="1.4" /><path d="M6.5 6.5v4l3.5-2-3.5-2z" fill="currentColor" /></svg>
-          Convert to MP3
+        <button 
+          className={`converter__action ${isProcessing ? 'converting' : ''}`} 
+          onClick={handleConvert}
+          disabled={isProcessing}
+        >
+          {isProcessing ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Converting...
+            </>
+          ) : (
+            <>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8.5a5 5 0 1010 0 5 5 0 00-10 0z" stroke="currentColor" strokeWidth="1.4" /><path d="M6.5 6.5v4l3.5-2-3.5-2z" fill="currentColor" /></svg>
+              Convert to MP3
+            </>
+          )}
         </button>
       )}
 
@@ -143,13 +157,29 @@ export default function ConverterSection() {
       <ProgressBar phase={conv.phase} progress={conv.progress} statusText={conv.statusText} />
 
       {conv.phase === 'completed' && conv.jobId && (
-        <div className="converter__state">
-          <div className="converter__player-wrap"><audio className="converter__audio-player" controls src={getDownloadUrl(conv.jobId)} /></div>
-          <button className="converter__download" onClick={() => triggerDownload(conv.jobId!)}>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M4.5 7.5L8 11 11.5 7.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /><path d="M2.5 13.5h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" /></svg>
-            Download MP3
+        <div className="converter__state conversion-success">
+          {/* Success Header */}
+          <div className="conversion-success-header">
+            <div className="success-icon-pulse">
+              <CheckCircle2 size={48} strokeWidth={2} />
+            </div>
+            <div className="success-title">Your MP3 is ready!</div>
+            <div className="success-subtitle">High quality • Instant download</div>
+          </div>
+          
+          <div className="converter__player-wrap">
+            <audio className="converter__audio-player" controls src={getDownloadUrl(conv.jobId)} />
+          </div>
+          
+          <button className="converter__download download-primary" onClick={() => triggerDownload(conv.jobId!)}>
+            <Download size={20} strokeWidth={2.5} />
+            <span>Download MP3</span>
           </button>
-          <button className="converter__action converter__action--reset" onClick={handleReset}>Convert Another</button>
+          
+          <button className="converter__action converter__action--reset" onClick={handleReset}>
+            <RotateCcw size={16} />
+            Convert Another
+          </button>
         </div>
       )}
 

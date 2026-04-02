@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar';
 import StatusChip from '../components/StatusChip';
 import ConverterSection from '../components/ConverterSection';
 import Footer from '../components/Footer';
+import TextType from '../components/TextType';
 
 const VIDEO_SRC =
   'https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260228_065522_522e2295-ba22-457e-8fdb-fbcd68109c73.mp4';
@@ -52,8 +53,14 @@ export default function Home() {
           <div className="hero__left">
             <h1 className="hero__headline">
               <span className={`hero__line hero__line--sans ${heroVisible ? 'visible' : ''}`}>
-                Convert any video into<br/>clean
-              </span>
+              <TextType
+                text="Convert any video 
+                into clean "
+                typingSpeed={60}
+                pauseDuration={2000}
+                showCursor
+              />
+            </span>
               <span className={`hero__line hero__line--serif ${heroVisible ? 'visible' : ''}`}>
                 MP3 audio instantly
               </span>
