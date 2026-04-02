@@ -1,8 +1,5 @@
 [phases.setup]
 nixPkgs = ["ffmpeg"]
 
-[phases.install]
-cmds = ["cd backend && pip install -r requirements.txt"]
-
 [start]
-cmd = "cd backend && uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
+cmd = "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
