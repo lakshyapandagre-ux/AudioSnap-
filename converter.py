@@ -73,6 +73,7 @@ def convert_uploaded_file(
             "-acodec", "libmp3lame", # MP3 codec
             "-ab", f"{quality}k",    # Bitrate
             "-ar", "44100",          # Sample rate
+            "-threads", "0",         # Use all available CPU threads
             "-y",                    # Overwrite
             "-progress", "pipe:1",   # Progress to stdout
             output_path,

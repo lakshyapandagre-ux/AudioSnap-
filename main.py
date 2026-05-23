@@ -8,6 +8,7 @@ import uuid
 import logging
 import asyncio
 import hashlib
+import shutil
 from pathlib import Path
 from datetime import datetime
 
@@ -80,7 +81,7 @@ def health():
 
 # ── Upload Convert ───────────────────────────────────────
 @app.post("/convert/upload")
-async def convert_upload(
+def convert_upload(
     background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     quality: str = Form("192"),
@@ -97,21 +98,20 @@ async def convert_upload(
     if quality not in ("128", "192", "320"):
         quality = "192"
 
-    # Read file content and check size
-    content = await file.read()
-    if len(content) > MAX_FILE_SIZE_BYTES:
+    # Create job
+    job_id = job_manager.create_job(source_type="upload", source_name=file.filename)
+
+    # Save uploaded file efficiently without reading into RAM
+    input_path = TEMP_DIR / f"{job_id}_input_{file.filename}"
+    with open(input_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    if os.path.getsize(input_path) > MAX_FILE_SIZE_BYTES:
+        os.remove(input_path)
         raise HTTPException(
             status_code=413,
             detail=f"File too large. Maximum size is {MAX_FILE_SIZE_MB} MB."
         )
-
-    # Create job
-    job_id = job_manager.create_job(source_type="upload", source_name=file.filename)
-
-    # Save uploaded file
-    input_path = TEMP_DIR / f"{job_id}_input_{file.filename}"
-    with open(input_path, "wb") as f:
-        f.write(content)
 
     output_path = TEMP_DIR / f"{job_id}_output.mp3"
 

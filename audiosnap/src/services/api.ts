@@ -3,7 +3,8 @@
  * All backend communication in one place.
  */
 
-const API_BASE = 'https://web-production-9f621.up.railway.app';
+// Use local backend during dev
+const API_BASE = 'http://127.0.0.1:8000';
 
 /* ── Types ─────────────────────────────────── */
 
