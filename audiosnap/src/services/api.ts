@@ -40,7 +40,7 @@ export async function checkHealth(): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/health`, {
       method: 'GET',
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(60000), // Increased to 60s for Render cold starts
     });
     if (!res.ok) return false;
     const data: HealthResponse = await res.json();
@@ -119,7 +119,7 @@ export async function convertInstagram(url: string, quality: string): Promise<Co
 
 export async function pollStatus(jobId: string): Promise<JobStatus> {
   const res = await fetch(`${API_BASE}/status/${jobId}`, {
-    signal: AbortSignal.timeout(8000),
+    signal: AbortSignal.timeout(30000),
   });
 
   if (!res.ok) {
