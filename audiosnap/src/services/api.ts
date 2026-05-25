@@ -40,7 +40,7 @@ export async function checkHealth(): Promise<boolean> {
   try {
     const res = await fetch(`${API_BASE}/health`, {
       method: 'GET',
-      signal: AbortSignal.timeout(60000), // Increased to 60s for Render cold starts
+      signal: AbortSignal.timeout(300000), // Increased to 5 mins for extremely slow Render cold starts
     });
     if (!res.ok) return false;
     const data: HealthResponse = await res.json();
