@@ -68,13 +68,15 @@ def convert_uploaded_file(
         # Run FFmpeg
         cmd = [
             FFMPEG_PATH,
+            "-y",                    # Overwrite (moved up)
+            "-v", "error",           # Only print errors to stderr to prevent deadlock
+            "-nostats",              # Disable continuous progress on stderr
             "-i", input_path,
             "-vn",                   # No video
             "-acodec", "libmp3lame", # MP3 codec
             "-ab", f"{quality}k",    # Bitrate
             "-ar", "44100",          # Sample rate
             "-threads", "0",         # Use all available CPU threads
-            "-y",                    # Overwrite
             "-progress", "pipe:1",   # Progress to stdout
             output_path,
         ]
@@ -210,13 +212,15 @@ def convert_from_url(
         
         ffmpeg_cmd = [
             FFMPEG_PATH,
+            "-y",                    # Overwrite
+            "-v", "error",           # Only print errors to stderr
+            "-nostats",              # Disable continuous progress on stderr
             "-i", downloaded_file,
             "-vn",                   # No video
             "-acodec", "libmp3lame", # MP3 codec
             "-ab", f"{quality}k",    # Bitrate
             "-ar", "44100",          # Sample rate
             "-threads", "0",         # Auto multiple CPU threads
-            "-y",                    # Overwrite
             "-progress", "pipe:1",   # Progress to stdout
             output_path,
         ]
